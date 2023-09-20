@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Ender3Pro_2.4.7_Marlin",
+			"path": "../../../../.."
+		},
+		{
+			"name": "Marlin",
+			"path": "../../../../../Marlin"
+		}
+	],
+	"settings": {}
+}
