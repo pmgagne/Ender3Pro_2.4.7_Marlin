@@ -36,3 +36,6 @@ Use the following g-code in Cura to start printing
     G92 E0 ; Reset Extruder
     G1 Z2.0 F3000 ; Move Z Axis up little to prevent scratching of Heat Bed
     G1 X5 Y20 Z0.3 F5000.0 ; Move over to prevent blob squish
+
+# Important notice
+This is my setup and I share it AS-IS, WITH NO WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY, COMPLETENESS OR PERFORMANCE. 
