@@ -37,7 +37,7 @@
  *
  * Advanced settings can be found in Configuration_adv.h
  */
-#define CONFIGURATION_H_VERSION 02010201
+#define CONFIGURATION_H_VERSION 02010207 // Marlin configuration version 2.1.2.7
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -88,8 +88,9 @@
 // @section machine
 
 // Choose the name from boards.h that matches your setup
+// Define the motherboard in use. Use BOARD_CREALITY_V427 if you have a v4.2.7 board.
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_CREALITY_V427
+  #define MOTHERBOARD BOARD_CREALITY_V422
 #endif
 
 /**
@@ -137,7 +138,7 @@
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Ender-3 Pro 4.2.7"
+#define CUSTOM_MACHINE_NAME "Ender-3 Pro 2.1.2.7"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -650,8 +651,9 @@
 
 // Enable PIDTEMP for PID control or MPCTEMP for Predictive Model.
 // temperature control. Disable both for bang-bang heating.
-#define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
-//#define MPCTEMP        // ** EXPERIMENTAL **
+#// PID temperature control disabled in favor of Model Predictive Control (MPC)
+//#define PIDTEMP          // Disabled: use MPCTEMP predictive control
+#define MPCTEMP           // Enable Model Predictive Control for hotend temperature control
 
 #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
@@ -684,22 +686,27 @@
  * for PID_EXTRUSION_SCALING and PID_FAN_SCALING. Use M306 T to autotune the model.
  * @section mpctemp
  */
+
 #if ENABLED(MPCTEMP)
   //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1300 bytes of flash)
   //#define MPC_AUTOTUNE_MENU                         // Add MPC auto-tuning to the "Advanced Settings" menu. (~350 bytes of flash)
 
   #define MPC_MAX BANG_MAX                            // (0..255) Current to nozzle while MPC is active.
-  #define MPC_HEATER_POWER { 40.0f }                  // (W) Heat cartridge powers.
+  #define MPC_HEATER_POWER { 40.0 }                  // (W) Heat cartridge power (original 40W cartridge)
 
-  #define MPC_INCLUDE_FAN                             // Model the fan speed?
+  #define MPC_INCLUDE_FAN                             // Model the fan speed
+  #define MPC_FILAMENT_FFD                            // Filament Feed Forward: anticipate heat input based on filament feedrate
 
-  // Measured physical constants from M306
-  #define MPC_BLOCK_HEAT_CAPACITY { 16.7f }           // (J/K) Heat block heat capacities.
-  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
-  #define MPC_AMBIENT_XFER_COEFF { 0.068f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  // Physical model constants
+  #define MPC_BLOCK_HEAT_CAPACITY { 16.5 }           // (J/K) Heat block heat capacity (brass block default)
+  #define MPC_SENSOR_RESPONSIVENESS { 0.22f }        // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.068f }          // (W/K) Heat transfer coefficient to room air with fan off.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.097f }
   #endif
+
+  // Additional convection coefficient for the part cooling fan at low speed
+  #define MPC_SENSOR_XFER_COEFF_FAN0 { 0.08 }
 
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
   #if ENABLED(MPC_INCLUDE_FAN)
@@ -1171,7 +1178,7 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 96.7 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 91.18 } // E-steps adjusted to 91.18 from calibration
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
@@ -1697,8 +1704,8 @@
 // @section geometry
 
 // The size of the printable area
-#define X_BED_SIZE 235
-#define Y_BED_SIZE 235
+#define X_BED_SIZE 220
+#define Y_BED_SIZE 220
 
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1878,7 +1885,15 @@
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
 #define AUTO_BED_LEVELING_UBL
-//#define MESH_BED_LEVELING
+// Manual Mesh Leveling (Manual Bed Leveling - MBL)
+// Enable manual correction of bed irregularities via a mesh table
+#define MANUAL_BED_LEVELING
+#if ENABLED(MANUAL_BED_LEVELING)
+  #define MESH_EDIT_GFX_OVERLAY
+  #define GRID_MAX_POINTS_X 5 // High-definition 5x5 grid (25 adjustment points)
+  #define GRID_MAX_POINTS_Y 5
+  #define LCD_BED_LEVELING    // Integrate step-by-step guidance in the LCD menus
+#endif
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable one of
