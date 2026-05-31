@@ -138,3 +138,17 @@ compatibility with the Creality v4.2.7 architecture:
 - Official Marlin Discord Community:
   Link: https://discord.gg/n5NJ59y
   Purpose: Core developers and expert community real-time support.
+
+Here are some useful links to help get your machine configured and calibrated:
+Example Configs:     https://github.com/MarlinFirmware/Configurations/branches/all
+
+ Průša Calculator:    https://blog.prusa3d.com/calculator_3416/
+
+ Calibration Guides:  https://reprap.org/wiki/Calibration
+                      https://reprap.org/wiki/Triffid_Hunter%27s_Calibration_Guide
+                      https://web.archive.org/web/20220907014303/sites.google.com/site/repraplogphase/calibration-of-your-reprap
+                      https://youtu.be/wAL9d7FgInk
+                      https://teachingtechyt.github.io/calibration.html
+
+ Calibration Objects: https://www.thingiverse.com/thing:5573
+                      https://www.thingiverse.com/thing:1278865
