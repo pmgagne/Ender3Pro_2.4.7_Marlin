@@ -119,6 +119,7 @@ Trinamic drivers:
 - `#define EMERGENCY_PARSER` (halts print on `M112`)
 - `#define HOST_ACTION_COMMANDS`
 - `#define HOST_PROMPT_SUPPORT`
+- **Host:** OctoPrint (user runs OctoPrint for print jobs).
 
 ## Verified Context & Web References
 When answering user queries or drafting code changes, cross-reference

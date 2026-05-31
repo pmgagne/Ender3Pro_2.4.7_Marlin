@@ -2395,16 +2395,18 @@
 #if BOTH(SDSUPPORT, DIRECT_STEPPING)
   #define BLOCK_BUFFER_SIZE  8
 #elif ENABLED(SDSUPPORT)
-  #define BLOCK_BUFFER_SIZE 64
+  #define BLOCK_BUFFER_SIZE 32
 #else
-  #define BLOCK_BUFFER_SIZE 64
+  #define BLOCK_BUFFER_SIZE 32
 #endif
 
 // @section serial
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#define BUFSIZE 32
+// Number of command slots the parser accepts. Reduced to 8 to limit RAM
+// usage while still allowing some lookahead from OctoPrint/host.
+#define BUFSIZE 8
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of flash (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
@@ -2419,7 +2421,11 @@
 // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
 // To use flow control, set this buffer size to at least 1024 bytes.
 // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-//#define RX_BUFFER_SIZE 1024
+// Host Receive Buffer Size
+// Increase for robust USB/OctoPrint transfers. 2048 recommended for
+// modern hosts to avoid dropped bytes and to enable XON/XOFF flow control
+// when needed.
+#define RX_BUFFER_SIZE 2048
 
 #if RX_BUFFER_SIZE >= 2048
   // Enable to have the controller send XON/XOFF control characters to
